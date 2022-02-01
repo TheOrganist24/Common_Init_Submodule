@@ -68,7 +68,7 @@ EOF
   fi
 
   # add placeholders for other standard files
-  for FILE in Makefile .gitignore LICENSE
+  for FILE in Makefile .gitignore LICENSE pre-commit
   do
     if [ ! -f $FILE ]
     then
@@ -89,9 +89,13 @@ common_repo_actions() {
   if [ ! -d .git ]
   then
     git init
+    make dev-environment
     git add .
     git commit --message="INIT: with TheOrganist24 repo generator."
     git branch -m development
+  else
+    git add .
+    git commit --message="INIT: Update initialised files."
   fi
 }
 
@@ -99,6 +103,132 @@ common_repo_actions() {
 python_repo () {
   NAME=$1
   SUMMARY=$2
+  
+  # check poetry is installed and setup
+  if ! poetry --version 2&> /dev/null 
+  then 
+    echo Recommend install poetry  https://python-poetry.org/docs/master/#installing-with-the-official-installer
+  fi
+  if [ ! -f pyproject.toml ]
+  then
+    cat << EOF > pyproject.toml
+[tool.poetry]
+name = "${NAME,,}"
+version = "0.1.0"
+description = "${SUMMARY}"
+authors = ["TheOrganist24 <code@theorganist24.co.uk>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+loguru = "^0.5.3"
+
+[tool.poetry.dev-dependencies]
+pycodestyle = "^2.8.0"
+pydocstyle = "^6.1.1"
+pytest = "^4.6"
+pytest-cov = "^3.0.0"
+mypy = "^0.931"
+toml = "^0.10.2"
+loguru-mypy = "^0.0.4"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+astronomical = "${NAME,,}.${NAME,,}:main"
+EOF
+  fi
+  
+  # setup package and test directories
+  for FOLDER in ${NAME,,} tests
+  do
+    if [ ! -d $FOLDER ]
+    then
+      mkdir $FOLDER
+      touch $FOLDER/__init__.py
+    fi
+  done
+  echo \"\"\"Package for ${NAME^^}.\"\"\" > ${NAME,,}/__init__.py
+  echo \"\"\"Main instantiation for ${NAME^^}.\"\"\" > ${NAME,,}/${NAME,,}.py
+  
+  if [ ! -f ${NAME,,}/${NAME,,}.py ]
+  then
+    touch ${NAME,,}/${NAME,,}.py
+  fi
+  if [ ! -f tests/test_${NAME,,}.py ]
+  then
+    touch tests/test_${NAME,,}.py
+  fi
+  
+  # setup Makefile and pre-commit
+  cat << EOF > Makefile
+  # environment
+SHELL=/bin/bash
+EXECUTE=poetry run
+
+# code
+PACKAGE=${NAME,,}
+
+# file groups
+LINT_GROUP=\$(PACKAGE)
+TEST_GROUP=tests/test_*.py tests/*/test_*.py
+
+# targets
+## standard
+all:
+
+install:
+
+uninstall:
+
+clean:
+
+info:
+
+check: format lint test
+
+## less standard
+dev-environment:
+	cp pre-commit .git/hooks/
+	poetry install
+format:
+	\$(EXECUTE) isort \$(LINT_GROUP)
+lint:
+	\$(EXECUTE) pycodestyle \$(LINT_GROUP)
+	\$(EXECUTE) pydocstyle \$(LINT_GROUP)
+	\$(EXECUTE) mypy \$(LINT_GROUP)
+
+test:
+	\$(EXECUTE) python3 -m unittest \$(TEST_GROUP)
+
+coverage:
+	\$(EXECUTE) pytest --cov=\$(PACKAGE) \$(TEST_GROUP)
+
+build:
+	poetry build
+
+## custom
+pre-commit: lint
+EOF
+  echo "make pre-commit" > pre-commit
+  chmod +x pre-commit
+  
+  echo "__pycache__\n.coverage" >> .gitignore
+  
+  # update docs
+  cat << EOF >> README.md
+poetry run ${NAME,,}
+
+### Lint and Test
+Code should be compliant with PEPs 8, 256, 484, and 526.
+\`\`\`bash
+make check  # calls \`make lint; make test\`
+\`\`\`
+EOF
+
 }
 
 
