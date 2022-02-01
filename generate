@@ -1,14 +1,33 @@
 #!/bin/bash
 
-NAME=$1
-OPTION=$2
-SUMMARY=$3
+NAME=${PWD##*/}
+
+if [ -n "$1" ]
+then
+  OPTION=$1
+else
+  echo "No repo type provided; exiting."
+  exit 1
+fi
+
+if [ -n "$2" ]
+then
+  SUMMARY=$2
+else
+  SUMMARY="A code project from TheOrganist24"
+fi
 
 
 main () {
+  # capture variables
   OPTION=$1
   NAME=$2
   SUMMARY=$3
+  
+  # create common files
+  common_files "$NAME" "$SUMMARY"
+  
+  # create language specific files and directories
   case $OPTION in
     Python|python|Python3|python3)
       python_repo "$NAME" "$SUMMARY"
@@ -20,32 +39,14 @@ main () {
       latex_repo "$NAME" "$SUMMARY"
       ;;
     *)
-      echo Expected "Python3", or "C".
+      echo "Expected \"Python3\", or \"C\"; doing nothing."
+      exit 1
       ;;
   esac
+  
+  # initialise git repo and commit base files
   common_repo_actions
-}
-
-
-common_repo_actions() {
-  git init
-  git add .
-  git commit --message="INIT: with TheOrganist24 repo generator."
-  git branch -m development
-}
-
-
-python_repo () {
-  NAME=$1
-  SUMMARY=$2
-  echo Creating Python3 repository "$NAME"
-  common_files "$NAME" "$SUMMARY"
-}
-
-
-c_repo () {
-  echo Creating C repository "$NAME"
-  common_files "$NAME" "$SUMMARY"
+  echo Repo created - feel free to run \`git push\`
 }
 
 
@@ -54,21 +55,56 @@ common_files () {
   SUMMARY=$2
   
   # create README
-  cat << EOF > README.md
+  if [ ! -f README.md ]
+  then
+    cat << EOF > README.md
 ![TheOrganist24 Code](https://hosted.courtman.me.uk/img/logos/theorganist24_banner_code.png "TheOrganist24 Code")
 
-# $NAME
+# ${NAME^^}
 > $SUMMARY
 
 ## Getting Started
 EOF
+  fi
 
   # add placeholders for other standard files
-  touch MakeFile .gitignore LICENSE
-  
+  for FILE in Makefile .gitignore LICENSE
+  do
+    if [ ! -f $FILE ]
+    then
+      touch $FILE
+    fi
+  done
+
   # create common directories
-  mkdir --parents img/src
-  touch img/src/.gitkeep
+  if [ ! -d img ]
+  then
+    mkdir --parents img/src
+    touch img/src/.gitkeep
+  fi
+}
+
+
+common_repo_actions() {
+  if [ ! -d .git ]
+  then
+    git init
+    git add .
+    git commit --message="INIT: with TheOrganist24 repo generator."
+    git branch -m development
+  fi
+}
+
+
+python_repo () {
+  NAME=$1
+  SUMMARY=$2
+}
+
+
+c_repo () {
+  NAME=$1
+  SUMMARY=$2
 }
 
 
