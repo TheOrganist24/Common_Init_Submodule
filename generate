@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME="$(echo $1 | tr '[:lower:]' '[:upper:]')"
+NAME=$1
 OPTION=$2
 SUMMARY=$3
 
@@ -50,7 +50,7 @@ common_files () {
 
 ## Getting Started
 EOF
-  touch MakeFile .gitignore
+  touch MakeFile .gitignore LICENSE
 }
 
 

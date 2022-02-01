@@ -3,6 +3,10 @@
 # Common Init Submodule
 > A submodule for initialising repositories according to TheOrganist24 standards.
 
+This script can be found at [Hosted Courtman](https://hosted.courtman.me.uk/files/init_script.sh)
+
+## Getting started
+
 General generations are:
 * README.md
 * .gitignore
