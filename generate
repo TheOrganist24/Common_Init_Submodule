@@ -220,7 +220,9 @@ EOF
   
   # update docs
   cat << EOF >> README.md
+\`\`\`bash
 poetry run ${NAME,,}
+\`\`\`
 
 ### Lint and Test
 Code should be compliant with PEPs 8, 256, 484, and 526.
