@@ -11,7 +11,7 @@ To run use the following:
 ```
 mkdir <PROJECT_NAME>
 cd <PROJECT_NAME>
-wget -qO - https://raw.githubusercontent.com/Theorganist24/Common_init_Submodule/development/generate | bash -s project_name Python3 "Project summary"
+wget -qO - https://raw.githubusercontent.com/Theorganist24/Common_init_Submodule/development/generate | bash -s Python3 "Project summary"
 ```
 
 General generations are:
