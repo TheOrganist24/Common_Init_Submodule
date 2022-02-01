@@ -6,6 +6,11 @@
 This script can be found at [Hosted Courtman](https://hosted.courtman.me.uk/files/init_script.sh)
 
 ## Getting started
+To run use the following:
+
+```
+wget -qO - https://raw.githubusercontent.com/Theorganist24/Common_init_Submodule/development/generate | bash -s project_name Python3 "Project summary"
+```
 
 General generations are:
 * README.md

@@ -16,10 +16,22 @@ main () {
     C|c)
       c_repo "$NAME" "$SUMMARY"
       ;;
+    C|c)
+      latex_repo "$NAME" "$SUMMARY"
+      ;;
     *)
       echo Expected "Python3", or "C".
       ;;
   esac
+  common_repo_actions
+}
+
+
+common_repo_actions() {
+  git init
+  git add .
+  git commit --message="INIT: with TheOrganist24 repo generator."
+  git branch -m development
 }
 
 
@@ -50,7 +62,13 @@ common_files () {
 
 ## Getting Started
 EOF
+
+  # add placeholders for other standard files
   touch MakeFile .gitignore LICENSE
+  
+  # create common directories
+  mkdir --parents img/src
+  touch img/src/.gitkeep
 }
 
 
