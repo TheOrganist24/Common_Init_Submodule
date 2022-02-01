@@ -1,0 +1,58 @@
+#!/bin/bash
+
+NAME="$(echo $1 | tr '[:lower:]' '[:upper:]')"
+OPTION=$2
+SUMMARY=$3
+
+
+main () {
+  OPTION=$1
+  NAME=$2
+  SUMMARY=$3
+  case $OPTION in
+    Python|python|Python3|python3)
+      python_repo "$NAME" "$SUMMARY"
+      ;;
+    C|c)
+      c_repo "$NAME" "$SUMMARY"
+      ;;
+    *)
+      echo Expected "Python3", or "C".
+      ;;
+  esac
+}
+
+
+python_repo () {
+  NAME=$1
+  SUMMARY=$2
+  echo Creating Python3 repository "$NAME"
+  common_files "$NAME" "$SUMMARY"
+}
+
+
+c_repo () {
+  echo Creating C repository "$NAME"
+  common_files "$NAME" "$SUMMARY"
+}
+
+
+common_files () {
+  NAME=$1
+  SUMMARY=$2
+  
+  # create README
+  cat << EOF > README.md
+![TheOrganist24 Code](https://hosted.courtman.me.uk/img/logos/theorganist24_banner_code.png "TheOrganist24 Code")
+
+# $NAME
+> $SUMMARY
+
+## Getting Started
+EOF
+  touch MakeFile .gitignore
+}
+
+
+
+main "$OPTION" "$NAME" "$SUMMARY"
