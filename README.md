@@ -3,7 +3,7 @@
 # Common Init Script
 > A submodule for initialising repositories according to TheOrganist24 standards.
 
-This script can be found at [Hosted Courtman](https://hosted.courtman.me.uk/files/init_script.sh)
+This script can be found at [TBC](https://hosted.courtman.me.uk/files/init_script.sh)
 
 ## Getting started
 To run use the following:
