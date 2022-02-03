@@ -232,6 +232,28 @@ dist
 poetry run ${NAME,,}
 \`\`\`
 
+
+## Development
+### Setting up Environment
+\`\`\`bash
+git clone git@gitlab.com:TheOrganist24/${NAME,,}.git
+cd ${NAME,,}
+make dev
+export LOG_LEVEL=INFO  # Optional; supports DEBUG, INFO, WARNING, ERROR, CRITICAL
+poetry run ${NAME,,} --version
+\`\`\`
+
+
+### Versioning
+Semantic versioning is used:
+\`\`\`
+poetry version <MAJOR,MINOR,PATCH>
+poetry version --short > VERSION
+\`\`\`
+
+Also don't forget to update \`${NAME,,}/__init__.py\` and \`tests/test_${NAME,,}.py\`.
+
+
 ### Lint and Test
 Code should be compliant with PEPs 8, 256, 484, and 526.
 \`\`\`bash
